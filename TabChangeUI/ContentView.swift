@@ -7,53 +7,168 @@
 
 import SwiftUI
 
+struct textView: View {
+    @State var text: String
+    
+    var body: some View{
+        VStack{
+            Text(text)
+            Spacer()
+        }
+    }
+}
+
+struct page1:View{
+    var body: some View{
+        VStack{
+            
+            ScrollView(.vertical,showsIndicators: false){
+                HStack{Spacer()}
+                Group {
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                }
+                Group {
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                }
+                Group {
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                    textView(text: "azarasi")
+                }
+                
+            }
+        }
+    }
+}
+
+struct page2:View{
+    var body: some View{
+        VStack{
+            
+            ScrollView(.vertical,showsIndicators: false){
+                HStack{Spacer()}
+                Group {
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                }
+                Group {
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                }
+                Group {
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                    textView(text: "kazaamma")
+                }
+                
+            }
+        }
+    }
+}
+
+struct splitView: View {
+    var body: some View{
+        GeometryReader { geo in
+            HStack(spacing: 0){
+                page1().frame(width: geo.size.width)
+//            Divider()
+                page2().frame(width: geo.size.width).background(.gray)
+            }
+        }
+    }
+}
+
+
 struct ContentView: View {
     
-    @State var xOffset:CGFloat = 0
+    @State var yOf:CGFloat = 0
+    @State var xOf:CGFloat = 0
+    @State var xs:CGFloat = 0
+    @State var xOffsetflag:Bool = false
+    @EnvironmentObject var tabModel:TabModel
     
     var body: some View {
-        
-        GeometryReader { geoVal in
-            VStack(spacing: 0) {
-                    HStack{
-                        Spacer().frame(width: geoVal.size.width / 5)
-                        VStack(){
-                            Button {
-                                print("ELEMON")
-                                xOffset = geoVal.size.width / 5.5
-                            } label: {
-                                Text("ELEMON").font(.title2)
+            VStack{
+                ZStack{
+                    VStack{
+                            Spacer().frame(height: yOf*0.035)
+                            splitView().offset(x: tabModel.xOfsetVal).animation(.default, value: tabModel.xOfsetVal)
+                    }.gesture(DragGesture()
+                        .onEnded({ val in
+                            print(val.translation.width)
+                            if val.startLocation.x > val.predictedEndLocation.x && val.translation.width < -(tabModel.xOfsetSt * 0.5) {
+                                tabModel.xOfsetVal = -tabModel.xOfsetSt
+                                self.tabModel.xOfset = true
                             }
-                        }
-                        Spacer()
-                        VStack(){
-//                            Spacer().frame(height: 40)
-                            Button {
-                                print("Health")
-                                xOffset = geoVal.size.width / 1.71
-                            } label: {
-                                Text("Health").font(.title2)
+                            if(val.startLocation.x < val.predictedEndLocation.x && val.translation.width > tabModel.xOfsetSt * 0.5){
+                                tabModel.xOfsetVal = 0
+                                self.tabModel.xOfset = false
                             }
+                        })
+                    )
+                    
+                    GeometryReader { geoVal in
+                        TabUIView(xOffsetflag: self.xOffsetflag).onAppear(){
+                            yOf = geoVal.size.height
+                            tabModel.xOfsetVal = 0
+                            tabModel.xOfsetSt = geoVal.size.width
                         }
-                        Spacer().frame(width: geoVal.size.width / 5)
-                    }.foregroundColor(.white)
-                        .background(.mint)
-                        .frame(width: geoVal.size.width)
-//                        .ignoresSafeArea()
-                HStack{
-//                    Spacer().frame(width: xOffset).animation(.default, value: xOffset)
-                    Text("").frame(width: 100, height: 3).background(.pink).offset(x: xOffset).animation(.default, value: xOffset)
-                    Spacer()
-                }.onAppear(){
-                    xOffset = geoVal.size.width / 5.5
-                }
-            }.background(.gray)
+                    }
+            }
         }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView().environmentObject(TabModel())
     }
 }

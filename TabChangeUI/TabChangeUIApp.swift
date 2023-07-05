@@ -11,7 +11,7 @@ import SwiftUI
 struct TabChangeUIApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environmentObject(TabModel())
         }
     }
 }
